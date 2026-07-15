@@ -1,0 +1,42 @@
+{
+  "name": "mattpocock-skills",
+  "version": "1.2.0",
+  "description": "Matt Pocock's agent skills for real engineering — grilling, spec/ticket flows, TDD, code review, domain modelling and more. Plug-and-play, not vibe coding.",
+  "author": {
+    "name": "Matt Pocock",
+    "url": "https://www.aihero.dev"
+  },
+  "homepage": "https://www.aihero.dev/s/skills-newsletter",
+  "repository": "https://github.com/mattpocock/skills",
+  "license": "MIT",
+  "keywords": [
+    "engineering",
+    "skills",
+    "tdd",
+    "code-review",
+    "grilling",
+    "domain-modeling",
+    "productivity"
+  ],
+  "skills": "./skills/",
+  "hooks": {},
+  "interface": {
+    "displayName": "Matt Pocock Skills",
+    "shortDescription": "Real-engineering workflows for coding agents: grilling, specs, tickets, TDD, review, and design.",
+    "longDescription": "Matt Pocock's agent skills for real engineering: align on intent with grilling, turn ideas into specs and tickets, implement with TDD, review code, model domains, improve architecture, and hand off work cleanly.",
+    "developerName": "Matt Pocock",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Interactive",
+      "Read",
+      "Write"
+    ],
+    "websiteURL": "https://github.com/mattpocock/skills",
+    "defaultPrompt": [
+      "Help me choose the right Matt Pocock skill for this task.",
+      "Grill me before we start building this feature.",
+      "Turn this idea into a spec and tickets."
+    ],
+    "brandColor": "#111827"
+  }
+}
