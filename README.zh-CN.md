@@ -24,49 +24,66 @@
 
 [订阅 Newsletter](https://www.aihero.dev/s/skills-newsletter)
 
-## 快速开始（30 秒安装）
+## 安装（30 秒完成）
 
-1. 运行 skills.sh 安装器：
+两种安装方式，两种理念。**[Claude Code plugin](https://code.claude.com/docs/en/plugins)** 会把整套 skills 作为托管的只读 bundle 安装，发布新版本后会自动更新，你订阅它，而不是 fork 它。**[skills.sh](https://skills.sh/mattpocock/skills)** 会把可编辑的 skill 文件复制到你的项目中，方便你修改和定制。请选择一种方式，同时安装两者会导致每个 skill 出现两份。
+
+### 1. 获取 skills
+
+<details>
+<summary><strong>Claude Code</strong></summary>
+
+```bash
+claude plugins install mattpocock-skills
+```
+
+或者在 Claude Code 会话中运行：
+
+```
+/plugin install mattpocock-skills
+```
+
+它位于 Claude Code 官方 marketplace 中，因此不需要先添加 marketplace，并且会自动接收更新。
+
+</details>
+
+<details>
+<summary><strong>Codex 及其他 agent</strong></summary>
 
 ```bash
 npx skills@latest add mattpocock/skills
 ```
 
-2. 选择你想安装的 skills，以及要安装到哪些 coding agents 上。**请确保选择 `/setup-matt-pocock-skills`**。
+选择要安装的 skills 以及目标 coding agents。**安装器允许你选择具体 skill，请确保选择 `setup-matt-pocock-skills`。**
 
-3. 在你的 agent 中运行 `/setup-matt-pocock-skills`。它会：
-   - 询问你要使用哪种 issue tracker（GitHub、Linear 或本地文件）
-   - 询问你在 triage tickets 时使用哪些标签（`/triage` 会使用这些标签）
-   - 询问你希望把创建的文档保存在哪里
+原生 Codex plugin 仍在 roadmap 上，参见 [`.agents/adr/0002-ship-as-a-claude-code-plugin.md`](./.agents/adr/0002-ship-as-a-claude-code-plugin.md)。
 
-4. 完成 —— 可以开始使用了。
+</details>
 
-## 作为 Claude Code plugin 安装
+<details>
+<summary><strong>希望自行修改的用户</strong></summary>
 
-如果你更想要一个即插即用、无需手动维护的安装方式，这些 skills 也以原生 [Claude Code plugin](https://code.claude.com/docs/en/plugins) 的形式发布。plugin 不会把可编辑文件复制到你的 repo 中，而是把整套 skill 作为托管 bundle 安装；当我发布新版本时，它会随之更新 —— 你订阅它，而不是 fork 它。
-
-在 Claude Code 内：
-
-```
-/plugin marketplace add mattpocock/skills
-/plugin install mattpocock-skills@mattpocock
-```
-
-或者在 shell 中：
+在任何 agent（包括 Claude Code）中使用同一个安装器：
 
 ```bash
-claude plugin marketplace add mattpocock/skills
-claude plugin install mattpocock-skills@mattpocock
+npx skills@latest add mattpocock/skills
 ```
 
-然后像快速开始中一样，在每个 repo 中运行一次 `/setup-matt-pocock-skills`。
+它会把 skills 作为普通文件写入你的 repo，你可以自行编辑。不会在后台自动更新；需要时运行 `npx skills update` 获取最新改动。
 
-两种安装方式，两种理念：
+</details>
 
-- **[skills.sh](https://skills.sh/mattpocock/skills)** 会把 skills 复制到你的项目里，方便你修改和定制。
-- **plugin** 会把它们作为只读、始终保持最新的 bundle 管理 —— 如果你只想直接使用我的这套 skills 并跟随更新，这是更适合的方式。
+### 2. 运行 `/setup-matt-pocock-skills`
 
-> 使用 Codex 或其他 agent？[skills.sh installer](https://skills.sh/mattpocock/skills) 目前已经可以把这些 skills 安装到 Codex 和其他兼容 Agent-Skills 标准的 harness 中。原生 Codex plugin 在 roadmap 上 —— 参见 [`.agents/adr/0002-ship-as-a-claude-code-plugin.md`](./.agents/adr/0002-ship-as-a-claude-code-plugin.md)。
+在每个 repo 中运行一次。它会：
+
+- 询问你要使用哪种 issue tracker（GitHub、Linear 或本地文件）
+- 询问你在 triage tickets 时使用哪些标签（`/triage` 会使用这些标签）
+- 询问你希望把创建的文档保存在哪里
+
+### 3. 完成
+
+现在可以开始使用了。
 
 ## 为什么这些 Skills 存在
 
@@ -197,7 +214,8 @@ AI 时代也是一样。你和 agent 之间存在沟通鸿沟。修复方式是�
 - **[domain-modeling](./skills/engineering/domain-modeling/SKILL.md)** — 主动建立和打磨项目的领域模型：根据 glossary 挑战术语，用边界场景进行压力测试，并内联更新 `CONTEXT.md` 与 ADR。
 - **[codebase-design](./skills/engineering/codebase-design/SKILL.md)** — 用于设计深模块的共享纪律和词汇：通过小接口暴露大量行为，放在干净 seam 上，并可通过该接口测试。
 - **[code-review](./skills/engineering/code-review/SKILL.md)** — 对固定基准之后的 diff 做双轴 review：**Standards**（是否遵循 repo 代码标准和 Fowler smell baseline）与 **Spec**（是否忠实实现原始 issue/PRD）；两轴作为并行 sub-agents 运行，互不污染。
-- **[resolving-merge-conflicts](./skills/engineering/resolving-merge-conflicts/SKILL.md)** — 处理进行中的 git merge 或 rebase 冲突，逐个 hunk 基于双方主要来源中的意图解决，然后完成操作 —— 永远不要 `--abort`。
+- **[resolving-merge-conflicts](./skills/engineering/resolving-merge-conflicts/SKILL.md)** — 处理进行中的 git merge 或 rebase 冲突，逐个 hunk 基于双方主要来源中的意图解决，然后完成操作，永远不要 `--abort`。
+- **[wizard](./skills/engineering/wizard/SKILL.md)** — 生成交互式 bash 向导，引导用户完成只有他们才能执行的步骤，例如配置基础设施、设置凭据或 CI secrets、操作陌生的第三方 dashboard，以及执行一次性迁移或切换。
 
 ### Productivity
 
@@ -208,8 +226,10 @@ AI 时代也是一样。你和 agent 之间存在沟通鸿沟。修复方式是�
 - **[grill-me](./skills/productivity/grill-me/SKILL.md)** — 对一个 plan 或 design 进行持续追问，直到决策树的每个分支都被解决。
 - **[handoff](./skills/productivity/handoff/SKILL.md)** — 将当前对话压缩成 handoff 文档，让另一个 agent 可以继续工作。
 - **[teach](./skills/productivity/teach/SKILL.md)** — 在多次 session 中教用户一个新 skill 或概念，并把当前目录作为有状态的教学工作区。
-- **[writing-great-skills](./skills/productivity/writing-great-skills/SKILL.md)** — 编写和编辑优质 skills 的参考资料：让一个 skill 可预测的词汇和原则。
+- **[to-questionnaire](./skills/productivity/to-questionnaire/SKILL.md)** — 将无法独自回答的决策整理成 Markdown 问卷，供真正能回答的人异步填写或在会议中共同完成。
+- **[wait-what](./skills/productivity/wait-what/SKILL.md)** — 当一条消息没有被理解时立即使用，用当前 `CONTEXT.md` 的词汇和缺失的上下文重新清晰表达。
 
 **模型调用型**
 
-- **[grilling](./skills/productivity/grilling/SKILL.md)** — 围绕 plan、decision 或 idea 持续访谈用户，直到决策树的每个分支都被解决。它是 `grill-me` 和 `grill-with-docs` 背后的可复用循环。
+- **[grilling](./skills/productivity/grilling/SKILL.md)** — 围绕 plan、decision 或 idea 持续访谈用户，直到决策树的每个分支都被解决。它是 `grill-me`、`grill-with-docs`、`triage`、`wayfinder` 和 `improve-codebase-architecture` 背后的可复用循环。
+- **[writing-for-agents](./skills/productivity/writing-for-agents/SKILL.md)** — 编写面向 agent 的文档，包括 skills、AGENTS.md、CLAUDE.md，以及 agent 通过指针访问的其他文档。
