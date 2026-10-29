@@ -260,3 +260,45 @@ AI 时代也是一样。你和 agent 之间存在沟通鸿沟。修复方式是�
 
 - **[grilling](./skills/productivity/grilling/SKILL.md)**：围绕 plan、decision 或 idea 持续访谈用户，直到决策树的每个分支都被解决。它是 `grill-me`、`grill-with-docs`、`triage`、`wayfinder` 和 `improve-codebase-architecture` 背后的可复用循环。
 - **[writing-for-agents](./skills/productivity/writing-for-agents/SKILL.md)**：编写面向 agent 的文档，包括 skills、AGENTS.md、CLAUDE.md，以及 agent 通过指针访问的其他文档。
+
+## 规划和执行：该用哪个技能？
+
+**平时先记住两个：规划用 `/grill-with-docs`，执行用 `/implement`。** 不过，“规划”可以进一步分成澄清需求、整理方案和拆分任务三件事：
+
+| 你现在要做什么 | 使用技能 | 它会做什么 |
+| --- | --- | --- |
+| 有个想法，需求和方案还没想清楚 | [`/grill-with-docs`](./skills/engineering/grill-with-docs/SKILL.md) | 通过追问，把需求、边界和关键选择讨论清楚，并记录下来 |
+| 已经讨论清楚，要整理成正式方案 | [`/to-spec`](./skills/engineering/to-spec/SKILL.md) | 把刚才的讨论整理成需求与实施说明，不再重新问一遍 |
+| 方案比较大，需要拆成小任务 | [`/to-tickets`](./skills/engineering/to-tickets/SKILL.md) | 列出可执行、可验证的任务，标明哪些必须先做 |
+| 开始实现一个功能或一项任务 | [`/implement`](./skills/engineering/implement/SKILL.md) | 写代码、做测试，最后进行代码审查 |
+| 已拆好很多任务，希望统一安排执行 | [`/implement-spec`](./skills/engineering/implement-spec/SKILL.md) | 按任务依赖组织执行，能并行的交给多个子代理，最后整体审查 |
+
+### 普通功能
+
+```text
+/grill-with-docs  讨论清楚
+       ↓
+/implement        开始实现
+```
+
+如果需求本来就很明确，直接使用 `/implement`，不用走全套。
+
+### 较大的功能
+
+```text
+/grill-with-docs  讨论需求和方案
+       ↓
+/to-spec          整理成正式说明
+       ↓
+/to-tickets       拆成任务，排好依赖
+       ↓
+/implement-spec   组织执行全部任务
+```
+
+最后一步也可以换成：**你自己控制节奏，每次用 `/implement` 做一项任务。**
+
+这些是按阶段由你依次调用的技能，不是运行第一个就会自动执行整条流程。也不必每次走全套；例如，`/to-tickets` 可以直接把已经讨论清楚的需求拆成任务，不强制先运行 `/to-spec`。
+
+### 什么时候用 `/wayfinder`？
+
+[`/wayfinder`](./skills/engineering/wayfinder/SKILL.md) 留给“整个项目很大，连该怎么推进都还不知道”的情况。它通过逐个解决关键问题来摸清方向，不是普通功能规划的默认选择，也不负责自动完成开发。方向清楚后，再进入 `/to-spec` → `/to-tickets` → `/implement` 或 `/implement-spec` 的流程。
