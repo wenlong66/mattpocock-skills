@@ -222,7 +222,7 @@ AI 时代也是一样。你和 agent 之间存在沟通鸿沟。修复方式是�
 
 - **[ask-matt](./skills/engineering/ask-matt/SKILL.md)**：询问哪一个 skill 或流程适合当前情况。它是这个 repo 中用户调用型 skills 的路由器。
 - **[grill-with-docs](./skills/engineering/grill-with-docs/SKILL.md)**：一次 grilling session，同时建立项目的领域模型，打磨术语，并内联更新 `GLOSSARY.md` 和 ADR。
-- **[triage](./skills/engineering/triage/SKILL.md)**：通过一组 triage 角色的状态机推进 issues。
+- **[triage](./skills/engineering/triage/SKILL.md)**：核实收到的问题、补齐缺失信息，并判断下一步该怎么处理，是否已经可以交给 agent 执行。
 - **[improve-codebase-architecture](./skills/engineering/improve-codebase-architecture/SKILL.md)**：扫描代码库中可以加深模块设计的机会，以可视化 HTML 报告呈现，然后围绕你选择的机会进行 grilling。
 - **[setup-matt-pocock-skills](./skills/engineering/setup-matt-pocock-skills/SKILL.md)**：为这些 engineering skills 配置当前 repo（issue tracker、triage labels、domain docs 布局）。使用其他 engineering skills 前，每个 repo 运行一次。
 - **[to-spec](./skills/engineering/to-spec/SKILL.md)**：将当前对话转成 spec 并发布到 issue tracker。不做访谈，只综合已经讨论过的内容。
@@ -230,7 +230,7 @@ AI 时代也是一样。你和 agent 之间存在沟通鸿沟。修复方式是�
 - **[implement](./skills/engineering/implement/SKILL.md)**：构建 spec 或 tickets 描述的工作，在预先同意的 seams 上驱动 `/tdd`，并在提交前用 `/code-review` 收尾。
 - **[implement-spec](./skills/engineering/implement-spec/SKILL.md)**：在一个集成分支上实现完整 spec。将 tickets 作为任务图处理，让实现子代理并发推进当前所有依赖已满足的任务，最后用 `/code-review` 收尾。
 - **[wayfinder](./skills/engineering/wayfinder/SKILL.md)**：为一个大到单个 agent session 放不下的工作块做规划，在 issue tracker 上生成共享的决策 tickets 地图；逐个解决它们，直到通往目标的路线清晰。
-- **[retro](./skills/engineering/retro/SKILL.md)**：在一次 session 结束后，按问题严重程度为 coding agent 的环境提出改进建议，涵盖代码导航、自动检查、编码规范、指导文件和工具。
+- **[retro](./skills/engineering/retro/SKILL.md)**：复盘一次开发过程，找出让 agent 反复出错或工作费劲的原因，按严重程度为项目指引、自动检查、编码规范和工具提出改进建议。
 
 **模型调用型**
 
@@ -302,3 +302,83 @@ AI 时代也是一样。你和 agent 之间存在沟通鸿沟。修复方式是�
 ### 什么时候用 `/wayfinder`？
 
 [`/wayfinder`](./skills/engineering/wayfinder/SKILL.md) 留给“整个项目很大，连该怎么推进都还不知道”的情况。它通过逐个解决关键问题来摸清方向，不是普通功能规划的默认选择，也不负责自动完成开发。方向清楚后，再进入 `/to-spec` → `/to-tickets` → `/implement` 或 `/implement-spec` 的流程。
+
+## 处理反馈与开发复盘
+
+**`triage` 解决“收到的问题该怎么处理”，`retro` 解决“下次怎样少踩同样的坑”。** 它们不是每个任务都要走的固定步骤。
+
+### `/triage`：先把收到的问题整理清楚
+
+[`/triage`](./skills/engineering/triage/SKILL.md) 适合处理别人提交的 bug 报告、功能建议和其他尚未整理清楚的反馈。重点不是马上写代码，而是核实情况、补齐信息，判断下一步该怎么推进。
+
+**使用前提：** 先通过 [`/setup-matt-pocock-skills`](./skills/engineering/setup-matt-pocock-skills/SKILL.md) 配置项目的问题跟踪方式和标签。调用时可以指定问题编号，也可以让它列出需要关注的问题。
+
+**什么时候调用：**
+
+- **反馈太模糊，无法直接动手。** 例如，用户只说“登录偶尔失败”，却没有操作步骤、报错信息和使用环境。先判断哪些事实能从代码中查到，哪些信息还需要向报告者确认。
+- **积累了一批问题，还不知道哪些可以开工。** 先核实问题是否成立，识别还缺哪些材料，再判断哪些已经足够清楚，可以交给 agent 处理。
+- **旧问题有了新信息，需要重新判断。** 例如，报告者补上了复现步骤或日志，之前无法判断的问题现在可以继续推进。
+
+**它会做什么：**
+
+围绕问题调查事实、追问缺失信息，先给出分类、处理阶段和下一步建议，等待你的指示。确认后，才根据项目配置的流程更新标签、状态或留言。最终可能是继续索要信息，也可能是整理成可以交给 agent 的任务，并不保证每条反馈都直接进入开发，也不会自动替你修复业务代码。
+
+**不要和这些技能混淆：**
+
+| 你要解决的问题 | 使用技能 |
+| --- | --- |
+| 收到一个问题，但还不确定是否属实、资料是否完整、能否开工 | [`/triage`](./skills/engineering/triage/SKILL.md) |
+| 方案已经讨论清楚，需要拆成小任务并标明先后依赖 | [`/to-tickets`](./skills/engineering/to-tickets/SKILL.md) |
+| 任务已经明确，现在要写代码和验证结果 | [`/implement`](./skills/engineering/implement/SKILL.md) |
+
+已经通过 `/to-tickets` 拆清楚、可以直接开工的任务，通常不需要再经过 `/triage`。不要把它当作所有任务开始前的必选检查。
+
+**调用示例：**
+
+```text
+/triage 看看 #42 的登录失败能否复现，还缺什么信息，是否已经可以安排修复。
+```
+
+```text
+/triage 整理最近收到的 bug 报告，区分哪些还需要补充材料、哪些已经可以交给 agent 处理。
+```
+
+### `/retro`：做完以后，改善 AI 下次干活的条件
+
+[`/retro`](./skills/engineering/retro/SKILL.md) 用来回顾一次开发过程，找出 agent 为什么反复出错、绕远路或漏掉检查。它关注的是工作环境和项目规则，而不是直接重写业务代码。
+
+**什么时候调用：**
+
+- **找文件、理解代码花了太多时间。** 例如，agent 多次改错目录，或总要重新调查同一套模块关系，可能需要更清楚的项目指引和代码导航说明。
+- **同一种错误反复出现，现有检查没有拦住。** 例如，漏跑测试、违反格式要求或遗漏必要验证，适合考虑补上确定性的自动检查，而不是只提醒“下次注意”。
+- **功能虽然做完了，但中途反复返工。** 例如，项目约定没有写清楚、工具反馈不足，或者 agent 无法方便地获取运行结果，值得在下一轮开发前改善。
+
+**什么时候做最合适：**
+
+最好在本轮开发结束后、清空当前会话之前调用，因为讨论、失败尝试和工具输出还在。也可以提供历史会话记录，让它根据那次开发的过程复盘。
+
+**你会得到什么：**
+
+基于会话中具体问题、按严重程度排列的改进建议，例如补充项目指引、添加自动检查、明确编码规范，或改善工具和反馈。能由工具判断的问题，优先交给自动检查；真正需要工程判断的规则，再写入编码规范。
+
+默认只提出建议，不会自行修改项目文件或安装自动化工具。等你选中并批准建议后，再落实对应改动。
+
+**不要和这些技能混淆：**
+
+| 你要解决的问题 | 使用技能 |
+| --- | --- |
+| 这次代码是否符合需求和项目规范，有没有需要修改的地方 | [`/code-review`](./skills/engineering/code-review/SKILL.md) |
+| 眼前有个难定位的 bug，需要复现、查原因并修复 | [`/diagnosing-bugs`](./skills/engineering/diagnosing-bugs/SKILL.md) |
+| 这次开发为什么反复出错，怎样改善环境以免下次重演 | [`/retro`](./skills/engineering/retro/SKILL.md) |
+
+如果只是想修复当前故障，不必先运行 `/retro`。先诊断和修复，再用它回顾哪些项目指引、检查或工具本可以更早发现或避免这个问题。
+
+**调用示例：**
+
+```text
+/retro 回顾这次登录功能开发。为什么反复找错文件、漏跑测试？先给出改进建议，不要直接修改文件。
+```
+
+```text
+/retro 根据这份历史会话记录，找出导致反复返工的项目规则和工具问题，按严重程度给出建议。
+```
